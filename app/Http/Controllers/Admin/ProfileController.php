@@ -22,10 +22,9 @@ class ProfileController extends Controller
     $profile = new Profile;
     $form = $request->all();
     unset($form['_token']);
-    unset($form['image']);
     $profile->fill($form);
     $profile->save();
-    return redirect('admin/profile/create');
+    return redirect('admin/profile');
   }
   
   public function index(Request $request)
