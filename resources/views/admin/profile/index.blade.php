@@ -35,7 +35,7 @@
                 <th width="15%">氏名</th>
                 <th width="15%">性別</th>
                 <th width="15%">趣味</th>
-                <th width="20%">自己紹介欄</th>
+                <th width="20%">目標</th>
                 <th width="20%">操作</th>
               </tr>
             </thead>
