@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\News;
 use App\NewsHistory;
 use Carbon\Carbon;
+use Storage;
+
 
 class NewsController extends Controller
 {
@@ -14,6 +16,8 @@ class NewsController extends Controller
   {
     return view('admin.news.create');
   }
+  
+  
   public function create(Request $request)
   {
     $this->validate($request, News::$rules);
@@ -21,8 +25,8 @@ class NewsController extends Controller
     $form = $request->all();
     
     if (isset($form['image'])) {
-      $path = $request->file('image')->store('public/image');
-      $news->image_path = basename($path);
+      $path = Storage::disk('s3')->putFile('/',$form['image'],'public');
+      $news->image_path = Storage::disk('s3')->url($path);
     }else{
       $news->image_path = null;
     }
@@ -35,6 +39,7 @@ class NewsController extends Controller
     return redirect('admin/news');
   }
   
+  
   public function index(Request $request)
   {
     $cond_title = $request->cond_title;
@@ -46,6 +51,7 @@ class NewsController extends Controller
     return view('admin.news.index', ['posts' => $posts, 'cond_title' => $cond_title]);
   }
   
+  
   public function edit(Request $request)
   {
     $news = News::find($request->id);
@@ -55,14 +61,15 @@ class NewsController extends Controller
     return view('admin.news.edit', ['news_form' => $news]);
   }
   
+  
   public function update(Request $request)
   {
     $this->validate($request, News::$rules);
     $news = News::find($request->id);
     $news_form = $request->all();
     if (isset($news_form['image'])) {
-      $path = $request->file('image')->store('public/image');
-      $news->image_path = basename($path);
+      $path = Storage::disk('s3')->putFile('/',$news_form['image'],'public');
+      $news->image_path = Storage::disk('s3')->url($path);
       unset($news_form['image']);
       } elseif (isset($request->remove)) {
         $news->image_path = null;
@@ -76,6 +83,7 @@ class NewsController extends Controller
     $history->save();
     return redirect('admin/news');
   }
+  
   
   public function delete(Request $request)
   {
