@@ -81,7 +81,7 @@ class NewsController extends Controller
     $history->news_id = $news->id;
     $history->edited_at = Carbon::now();
     $history->save();
-    return redirect('admin/news');
+    return redirect('admin/news/');
   }
   
   
