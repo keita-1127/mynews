@@ -47,7 +47,7 @@
                @if ($post->image_path)
                 <img src="{{ $post->image_path }}">
                @endif
-            </div>
+              </div>
             </div>
           </div>
           <hr color="#c0c0c0">
