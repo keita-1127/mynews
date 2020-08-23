@@ -63,25 +63,31 @@ class NewsController extends Controller
   
   
   public function update(Request $request) 
-  {
-    $this->validate($request, News::$rules);
-    $news = News::find($request->id);
-    $news_form = $request->all();
-    if (isset($news_form['image'])) {
-      $path = Storage::disk('s3')->putFile('/',$news_form['image'],'public');
-      $news->image_path = Storage::disk('s3')->url($path);
-      unset($news_form['image']);
-      } elseif (isset($request->remove)) {
-        $news->image_path = null;
-        unset($news_form['remove']);
-      }
-    unset($news_form['_token']);
-    $news->fill($news_form)->save();
-    $history = new NewsHistory;
-    $history->news_id = $news->id;
-    $history->edited_at = Carbon::now();
-    $history->save();
-    return redirect('admin/news/');
+  { try
+    {
+      $this->validate($request, News::$rules);
+      $news = News::find($request->id);
+      $news_form = $request->all();
+      if (isset($news_form['image'])) {
+        $path = Storage::disk('s3')->putFile('/',$news_form['image'],'public');
+        $news->image_path = Storage::disk('s3')->url($path);
+        unset($news_form['image']);
+        } elseif (isset($request->remove)) {
+          $news->image_path = null;
+          unset($news_form['remove']);
+        }
+      unset($news_form['_token']);
+      $news->fill($news_form)->save();
+      $history = new NewsHistory;
+      $history->news_id = $news->id;
+      $history->edited_at = Carbon::now();
+      $history->save();
+      return redirect('admin/news/');
+    }
+    catch(\Exception $exception)
+    { dd
+      ($exception->getMessage());
+    }
   }
   
   
